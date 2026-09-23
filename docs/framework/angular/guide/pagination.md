@@ -321,7 +321,7 @@ readonly table = injectTable(() => ({
 
 A common reason to set `autoResetPageIndex: false` is editing data while viewing the table (for example, inline cell editing). Every edit updates `data`, which recomputes the row models and would otherwise snap the user back to the first page. Setting the option to a static `false` keeps the current page when the row model recomputes. If you also use the expanding feature, pair it with `autoResetExpanded: false` so expanded rows do not collapse on edits.
 
-When `autoResetPageIndex` is off, a `pageIndex` that no longer exists after the rows shrink (for example, deleting the last rows on the last page) is clamped to the last page, so the table does not show an empty page. With `manualPagination`, keeping `pageIndex` within the server's page range is still up to you.
+When `autoResetPageIndex` is off, a `pageIndex` that no longer exists after a data, filter, or grouping change shrinks the rows (for example, deleting the last rows on the last page) is clamped to the last page, so the table does not show an empty page. With `manualPagination`, keeping `pageIndex` within the server's page range is still up to you.
 
 ### Pagination APIs
 

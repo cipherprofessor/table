@@ -416,6 +416,39 @@ describe('pageIndex clamp when the page-index auto-reset is disabled (#4994)', (
 
     expect(table.atoms.pagination.get().pageIndex).toBe(2)
   })
+
+  it('does not compute downstream row models on page 0', async () => {
+    const filterSpy = vi.fn(() => true)
+    const table = constructTable<typeof features, Person>({
+      features,
+      columns: [
+        { accessorKey: 'name', id: 'name' },
+        { accessorKey: 'age', id: 'age' },
+        { accessorKey: 'group', id: 'group', filterFn: filterSpy },
+      ],
+      data: makeData(),
+      getSubRows: (row) => row.subRows,
+      initialState: {
+        pagination: { pageIndex: 0, pageSize: 2 },
+        columnFilters: [{ id: 'group', value: 'even' }],
+      },
+      autoResetPageIndex: false,
+    })
+
+    table.getCoreRowModel()
+    await flushMicrotasks()
+    await flushMicrotasks()
+
+    filterSpy.mockClear()
+
+    table.setOptions((old) => ({ ...old, data: makeData() }))
+    table.getCoreRowModel()
+    await flushMicrotasks()
+    await flushMicrotasks()
+
+    expect(table.atoms.pagination.get().pageIndex).toBe(0)
+    expect(filterSpy).not.toHaveBeenCalled()
+  })
 })
 
 describe('autoResetSorting end-to-end wiring', () => {
